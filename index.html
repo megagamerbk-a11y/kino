@@ -1,1 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kino</title>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">Kino</div>
+      <input id="searchInput" class="search" type="text" placeholder="Поиск по названию" />
+      <div id="videoList" class="video-list"></div>
+    </aside>
 
+    <main class="content">
+      <section class="player-card">
+        <div class="player-stage">
+          <div id="playerHost"></div>
+        </div>
+        <div class="controls">
+          <button id="playBtn">▶</button>
+          <button id="muteBtn">🔊</button>
+          <div class="time" id="timeNow">00:00</div>
+          <input id="seekBar" class="seek" type="range" min="0" max="100" value="0" />
+          <div class="time" id="timeLeft">-00:00</div>
+          <button id="fullBtn">⛶</button>
+        </div>
+      </section>
+
+      <section class="meta-card">
+        <h1 id="videoTitle">Выберите видео</h1>
+        <p id="videoDescription" class="description">Здесь будет описание.</p>
+        <div class="meta-row">
+          <span id="videoType" class="chip">—</span>
+          <a id="directLink" class="chip link-chip" href="#" target="_blank" rel="noopener noreferrer">Открыть прямую ссылку</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
