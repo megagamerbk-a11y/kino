@@ -1,4 +1,51 @@
 <!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kino</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand-row">
+        <div>
+          <h1 class="brand">Kino</h1>
+          <div class="brand-sub">Ваши ссылки, библиотека и плеер</div>
+        </div>
+      </div>
+
+      <div class="panel search-panel">
+        <input id="searchInput" class="input" type="text" placeholder="Поиск по названию, типу, категории" />
+      </div>
+
+      <div class="panel add-panel">
+        <div class="panel-title">Добавить ссылку</div>
+        <input id="titleInput" class="input" type="text" placeholder="Название" />
+        <input id="urlInput" class="input" type="text" placeholder="Прямая ссылка на файл/поток" />
+        <div class="row two-col">
+          <select id="typeInput" class="input">
+            <option value="mp4">mp4</option>
+            <option value="webm">webm</option>
+            <option value="hls">m3u8 / hls</option>
+            <option value="ogv">ogv test</option>
+          </select>
+          <input id="categoryInput" class="input" type="text" placeholder="Категория" />
+        </div>
+        <textarea id="descriptionInput" class="input textarea" placeholder="Описание (необязательно)"></textarea>
+        <div class="row">
+          <button id="addBtn" class="btn primary">Сохранить</button>
+          <button id="clearFormBtn" class="btn">Очистить</button>
+        </div>
+      </div>
+
+      <div class="panel presets-panel">
+        <div class="panel-title">Быстрые тесты</div>
+        <div class="preset-list">
+          <button class="btn preset-btn" data-title="Demo MP4" data-type="mp4" data-category="demo" data-url="https://www.w3schools.com/html/mov_bbb.mp4">Тест MP4</button>
+          <button class="btn preset-btn" data-title="Demo WebM" data-type="webm" data-category="demo" data-url="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm">Тест WebM</button>
+          <button class="btn preset-btn" data-title="Demo HLS" data-type="hls" data-category="stream" data-url="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">Тест HLS</button>
         </div>
       </div>
 
