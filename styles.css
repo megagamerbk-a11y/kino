@@ -230,6 +230,7 @@ button, input, textarea, select {
 .player-modes {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .mode-btn {
@@ -245,6 +246,10 @@ button, input, textarea, select {
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
+}
+
+.mode-btn.device-active {
+  box-shadow: 0 0 0 1px rgba(255,45,45,0.35), 0 0 18px rgba(255,45,45,0.18);
 }
 
 .player-stage {
