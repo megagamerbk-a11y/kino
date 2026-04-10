@@ -3,7 +3,6 @@
   --panel: #151518;
   --panel-2: #1c1c20;
   --line: rgba(255,255,255,0.08);
-  --line-2: rgba(255,255,255,0.16);
   --text: #ffffff;
   --muted: #a8a8b2;
   --accent: #ff2d2d;
@@ -227,29 +226,17 @@ button, input, textarea, select {
   margin-top: 4px;
 }
 
-.player-modes {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.mode-btn {
-  background: transparent;
+.player-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--accent-soft);
   color: #ff8a8a;
   border: 1px solid rgba(255,45,45,0.35);
-  border-radius: 999px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-.mode-btn.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-
-.mode-btn.device-active {
-  box-shadow: 0 0 0 1px rgba(255,45,45,0.35), 0 0 18px rgba(255,45,45,0.18);
+  font-weight: 700;
 }
 
 .player-stage {
@@ -259,10 +246,7 @@ button, input, textarea, select {
 }
 
 .player-host,
-.player-host video,
-.player-host audio,
-.player-host ogvjs,
-.player-host canvas {
+.player-host video {
   width: 100% !important;
   height: 100% !important;
 }
