@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kino Device Test</title>
+  <link rel="stylesheet" href="/device.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Device Video Test</h1>
+      <p class="muted">
+        Эта страница нужна только для диагностики устройства.
+        Сначала вставьте ссылку или используйте готовый тест, потом проверьте 4 режима.
+      </p>
+
+      <div class="row">
+        <input id="sourceUrl" type="text" placeholder="Вставьте прямую ссылку на mp4 / webm / m3u8" />
+        <button id="applyBtn">Подставить</button>
+      </div>
+
+      <div class="preset-row">
+        <button class="preset-btn" data-url="https://www.w3schools.com/html/mov_bbb.mp4">Demo MP4</button>
+        <button class="preset-btn" data-url="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm">Demo WebM</button>
+        <button class="preset-btn" data-url="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">Demo HLS</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card test-card">
+        <div class="test-head">
+          <div class="test-title">1. Direct</div>
+          <button class="run-btn" data-mode="direct">Play</button>
+        </div>
+        <div class="player-box">
+          <video id="video-direct" playsinline controls preload="metadata"></video>
+        </div>
+        <div class="small">Источник: напрямую</div>
+        <div id="status-direct" class="status">Ожидание</div>
+      </section>
+
+      <section class="card test-card">
+        <div class="test-head">
+          <div class="test-title">2. Proxy passthrough</div>
+          <button class="run-btn" data-mode="proxy">Play</button>
+        </div>
+        <div class="player-box">
+          <video id="video-proxy" playsinline controls preload="metadata"></video>
+        </div>
+        <div class="small">Источник: /api/proxy?url=...</div>
+        <div id="status-proxy" class="status">Ожидание</div>
+      </section>
+
+      <section class="card test-card">
+        <div class="test-head">
+          <div class="test-title">3. Proxy as mp4</div>
+          <button class="run-btn" data-mode="mp4">Play</button>
+        </div>
+        <div class="player-box">
+          <video id="video-mp4" playsinline controls preload="metadata"></video>
+        </div>
+        <div class="small">Источник: /api/proxy?force=mp4</div>
+        <div id="status-mp4" class="status">Ожидание</div>
+      </section>
+
+      <section class="card test-card">
+        <div class="test-head">
+          <div class="test-title">4. Proxy as webm</div>
+          <button class="run-btn" data-mode="webm">Play</button>
+        </div>
+        <div class="player-box">
+          <video id="video-webm" playsinline controls preload="metadata"></video>
+        </div>
+        <div class="small">Источник: /api/proxy?force=webm</div>
+        <div id="status-webm" class="status">Ожидание</div>
+      </section>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Текущая ссылка</div>
+      <div id="currentUrl" class="url-box">—</div>
+      <div class="section-title" style="margin-top:14px;">Как интерпретировать результат</div>
+      <div class="muted">
+        Если на устройстве работает только один режим, значит проблема именно в способе подачи потока.
+        Если везде есть только звук, а на ноутбуке всё работает, значит устройство получает поток, но не рисует видеоряд нормально.
+      </div>
+    </div>
+  </div>
+
+  <script src="/device.js"></script>
+</body>
+</html>
