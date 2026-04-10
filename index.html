@@ -29,7 +29,6 @@
             <option value="mp4">mp4</option>
             <option value="webm">webm</option>
             <option value="hls">m3u8 / hls</option>
-            <option value="ogv">ogv test</option>
           </select>
           <input id="categoryInput" class="input" type="text" placeholder="Категория" />
         </div>
@@ -68,11 +67,7 @@
             <div id="currentTitle" class="player-title">Выберите ссылку</div>
             <div id="currentMeta" class="player-meta">Тип: —</div>
           </div>
-          <div class="player-modes">
-            <button id="modeNativeBtn" class="mode-btn active">Native</button>
-            <button id="modeOgvBtn" class="mode-btn">OGV test</button>
-            <button id="modeDeviceBtn" class="mode-btn">Device mode</button>
-          </div>
+          <div class="player-mode-badge">Native</div>
         </div>
 
         <div id="playerStage" class="player-stage">
@@ -111,7 +106,6 @@
 
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="https://unpkg.com/ogv@1.8.9/dist/ogv.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
