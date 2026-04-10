@@ -1,6 +1,7 @@
 export async function onRequestGet(context) {
   const requestUrl = new URL(context.request.url);
   const target = requestUrl.searchParams.get('url');
+  const force = requestUrl.searchParams.get('force');
 
   if (!target) {
     return new Response('Missing url parameter', { status: 400 });
@@ -48,9 +49,16 @@ export async function onRequestGet(context) {
   headers.set('Access-Control-Allow-Origin', '*');
   headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
 
-  const contentType = upstreamResponse.headers.get('content-type');
-  if (contentType) {
-    headers.set('Content-Type', contentType);
+  const originalType = upstreamResponse.headers.get('content-type');
+
+  if (force === 'mp4') {
+    headers.set('Content-Type', 'video/mp4');
+    headers.set('Content-Disposition', 'inline; filename="forced.mp4"');
+  } else if (force === 'webm') {
+    headers.set('Content-Type', 'video/webm');
+    headers.set('Content-Disposition', 'inline; filename="forced.webm"');
+  } else if (originalType) {
+    headers.set('Content-Type', originalType);
   } else {
     headers.set('Content-Type', 'application/octet-stream');
   }
