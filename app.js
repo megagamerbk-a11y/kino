@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'kino_links_v2';
+const STORAGE_KEY = 'kino_links_native_v1';
 
 const els = {
   searchInput: document.getElementById('searchInput'),
@@ -26,20 +26,14 @@ const els = {
   timeCurrent: document.getElementById('timeCurrent'),
   timeRemaining: document.getElementById('timeRemaining'),
   fullscreenBtn: document.getElementById('fullscreenBtn'),
-  modeNativeBtn: document.getElementById('modeNativeBtn'),
-  modeOgvBtn: document.getElementById('modeOgvBtn'),
-  modeDeviceBtn: document.getElementById('modeDeviceBtn'),
   playerStage: document.getElementById('playerStage')
 };
 
 let links = [];
 let currentId = null;
 let filterFavorites = false;
-let playerMode = 'native';
-
 let nativeVideo = null;
 let hlsInstance = null;
-let ogvPlayer = null;
 
 const presets = Array.from(document.querySelectorAll('.preset-btn'));
 
@@ -116,7 +110,7 @@ function formatTime(sec) {
     : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function destroyPlayers() {
+function destroyPlayer() {
   try {
     if (hlsInstance) hlsInstance.destroy();
   } catch {}
@@ -131,25 +125,19 @@ function destroyPlayers() {
   } catch {}
   nativeVideo = null;
 
-  try {
-    if (ogvPlayer && typeof ogvPlayer.stop === 'function') {
-      ogvPlayer.stop();
-    }
-  } catch {}
-  ogvPlayer = null;
-
   els.playerHost.innerHTML = '';
 }
 
-function updateNativeControls() {
-  if (playerMode !== 'native') {
+function updateControls() {
+  const video = nativeVideo;
+  if (!video) {
     els.playPauseBtn.textContent = '▶';
     els.muteBtn.textContent = '🔊';
+    els.timeCurrent.textContent = '00:00';
+    els.timeRemaining.textContent = '-00:00';
+    els.seekBar.value = '0';
     return;
   }
-
-  const video = nativeVideo;
-  if (!video) return;
 
   els.playPauseBtn.textContent = video.paused ? '▶' : '⏸';
   els.muteBtn.textContent = video.muted ? '🔇' : '🔊';
@@ -162,16 +150,8 @@ function updateNativeControls() {
   els.seekBar.value = dur ? String((cur / dur) * 100) : '0';
 }
 
-function resetNonNativeControlsLabel() {
-  els.playPauseBtn.textContent = '▶';
-  els.muteBtn.textContent = '🔊';
-  els.timeCurrent.textContent = '00:00';
-  els.timeRemaining.textContent = '-00:00';
-  els.seekBar.value = '0';
-}
-
-function createNativeVideo(item) {
-  destroyPlayers();
+function createPlayer(item) {
+  destroyPlayer();
   els.overlayMessage.style.display = 'none';
 
   const video = document.createElement('video');
@@ -194,86 +174,23 @@ function createNativeVideo(item) {
       hlsInstance = new Hls();
       hlsInstance.loadSource(item.url);
       hlsInstance.attachMedia(video);
+      setStatus('Открыт HLS поток.');
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = item.url;
+      setStatus('Открыт HLS поток нативно.');
     } else {
-      setStatus('Этот браузер не поддерживает HLS в native-режиме.');
+      setStatus('Этот браузер не поддерживает HLS.');
     }
   } else {
     video.src = item.url;
+    setStatus('Открыт обычный видеофайл.');
   }
 
   ['loadedmetadata', 'timeupdate', 'play', 'pause', 'volumechange', 'ended'].forEach((ev) => {
-    video.addEventListener(ev, updateNativeControls);
+    video.addEventListener(ev, updateControls);
   });
 
-  updateNativeControls();
-}
-
-function createOgvPlayer(item, isDeviceMode = false) {
-  destroyPlayers();
-  els.overlayMessage.style.display = 'none';
-
-  const proxied = buildProxyUrl(item.url);
-  els.proxyText.textContent = proxied;
-
-  const player = document.createElement('ogvjs');
-  player.setAttribute('src', proxied);
-  player.setAttribute('controls', '');
-  player.style.width = '100%';
-  player.style.height = '100%';
-
-  els.playerHost.appendChild(player);
-  ogvPlayer = player;
-
-  resetNonNativeControlsLabel();
-
-  player.addEventListener('loadedmetadata', () => {
-    setStatus(
-      isDeviceMode
-        ? 'Device mode: поток загружен через OGV.js.'
-        : 'OGV.js: поток загружен.'
-    );
-  });
-
-  player.addEventListener('error', () => {
-    setStatus(
-      isDeviceMode
-        ? 'Device mode: видео не отрисовалось. Значит, нужен ещё более специальный способ подачи.'
-        : 'OGV.js не смог воспроизвести поток. Возможно, источник не webm-совместим.'
-    );
-  });
-
-  try {
-    if (typeof player.play === 'function') {
-      player.play().catch(() => {});
-    }
-  } catch {}
-}
-
-function applyModeButtons() {
-  els.modeNativeBtn.classList.toggle('active', playerMode === 'native');
-  els.modeOgvBtn.classList.toggle('active', playerMode === 'ogv');
-  els.modeDeviceBtn.classList.toggle('active', playerMode === 'device');
-  els.modeDeviceBtn.classList.toggle('device-active', playerMode === 'device');
-}
-
-function setMode(mode) {
-  playerMode = mode;
-  applyModeButtons();
-
-  const item = links.find((x) => x.id === currentId);
-  if (item) {
-    openItem(item.id);
-  } else {
-    if (mode === 'device') {
-      setStatus('Device mode включен. Теперь откройте ссылку из библиотеки.');
-    } else if (mode === 'ogv') {
-      setStatus('OGV test включен. Теперь откройте ссылку из библиотеки.');
-    } else {
-      setStatus('Native mode включен.');
-    }
-  }
+  updateControls();
 }
 
 function openItem(id) {
@@ -286,17 +203,7 @@ function openItem(id) {
   els.currentDescription.textContent = item.description || 'Без описания';
   els.sourceText.textContent = item.url;
 
-  if (playerMode === 'device') {
-    createOgvPlayer(item, true);
-    setStatus('Device mode: открываем поток только через OGV.js.');
-  } else if (playerMode === 'ogv') {
-    createOgvPlayer(item, false);
-    setStatus('OGV test: открываем поток через OGV.js.');
-  } else {
-    createNativeVideo(item);
-    setStatus('Native mode: открываем обычным video-плеером.');
-  }
-
+  createPlayer(item);
   renderLibrary();
 }
 
@@ -369,14 +276,14 @@ function deleteItem(id) {
 
   if (currentId === id) {
     currentId = null;
-    destroyPlayers();
+    destroyPlayer();
     els.overlayMessage.style.display = 'flex';
     els.currentTitle.textContent = 'Выберите ссылку';
     els.currentMeta.textContent = 'Тип: —';
     els.currentDescription.textContent = 'Описание появится здесь.';
     els.sourceText.textContent = '—';
     els.proxyText.textContent = '—';
-    resetNonNativeControlsLabel();
+    updateControls();
   }
 
   saveLinks();
@@ -456,12 +363,8 @@ els.showFavBtn.addEventListener('click', () => {
   renderLibrary();
 });
 
-els.modeNativeBtn.addEventListener('click', () => setMode('native'));
-els.modeOgvBtn.addEventListener('click', () => setMode('ogv'));
-els.modeDeviceBtn.addEventListener('click', () => setMode('device'));
-
 els.playPauseBtn.addEventListener('click', async () => {
-  if (playerMode !== 'native' || !nativeVideo) return;
+  if (!nativeVideo) return;
 
   if (nativeVideo.paused) {
     try {
@@ -471,23 +374,23 @@ els.playPauseBtn.addEventListener('click', async () => {
     nativeVideo.pause();
   }
 
-  updateNativeControls();
+  updateControls();
 });
 
 els.muteBtn.addEventListener('click', () => {
-  if (playerMode !== 'native' || !nativeVideo) return;
+  if (!nativeVideo) return;
   nativeVideo.muted = !nativeVideo.muted;
-  updateNativeControls();
+  updateControls();
 });
 
 els.seekBar.addEventListener('input', () => {
-  if (playerMode !== 'native' || !nativeVideo) return;
+  if (!nativeVideo) return;
 
   const dur = nativeVideo.duration;
   if (!dur) return;
 
   nativeVideo.currentTime = (Number(els.seekBar.value) / 100) * dur;
-  updateNativeControls();
+  updateControls();
 });
 
 els.fullscreenBtn.addEventListener('click', async () => {
@@ -517,10 +420,9 @@ function init() {
   links = loadLinks();
   seedDefaultsIfEmpty();
   renderLibrary();
-  applyModeButtons();
   els.overlayMessage.style.display = 'flex';
-  resetNonNativeControlsLabel();
-  setStatus('Сайт готов. Для Вашего устройства попробуйте Device mode.');
+  updateControls();
+  setStatus('Сайт готов. Используется только рабочий Native mode.');
 }
 
 init();
