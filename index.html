@@ -1,41 +1,61 @@
 <!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kino</title>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-  <link rel="stylesheet" href="/styles.css" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">Kino</div>
-      <input id="searchInput" class="search" type="text" placeholder="Поиск по названию" />
-      <div id="videoList" class="video-list"></div>
+        </div>
+      </div>
+
+      <div class="panel library-panel">
+        <div class="panel-title panel-title-row">
+          <span>Библиотека</span>
+          <div class="mini-actions">
+            <button id="showAllBtn" class="mini-btn active">Все</button>
+            <button id="showFavBtn" class="mini-btn">★</button>
+          </div>
+        </div>
+        <div id="libraryList" class="library-list"></div>
+      </div>
     </aside>
 
     <main class="content">
       <section class="player-card">
-        <div class="player-stage">
-          <div id="playerHost"></div>
+        <div class="player-head">
+          <div>
+            <div id="currentTitle" class="player-title">Выберите ссылку</div>
+            <div id="currentMeta" class="player-meta">Тип: —</div>
+          </div>
+          <div class="player-modes">
+            <button id="modeNativeBtn" class="mode-btn active">Native</button>
+            <button id="modeOgvBtn" class="mode-btn">OGV test</button>
+          </div>
         </div>
+
+        <div id="playerStage" class="player-stage">
+          <div id="playerHost" class="player-host"></div>
+          <div id="overlayMessage" class="overlay-message">Ничего не выбрано</div>
+        </div>
+
         <div class="controls">
-          <button id="playBtn">▶</button>
-          <button id="muteBtn">🔊</button>
-          <div class="time" id="timeNow">00:00</div>
+          <button id="playPauseBtn" class="btn icon-btn">▶</button>
+          <button id="muteBtn" class="btn icon-btn">🔊</button>
+          <div id="timeCurrent" class="time-label">00:00</div>
           <input id="seekBar" class="seek" type="range" min="0" max="100" value="0" />
-          <div class="time" id="timeLeft">-00:00</div>
-          <button id="fullBtn">⛶</button>
+          <div id="timeRemaining" class="time-label">-00:00</div>
+          <button id="fullscreenBtn" class="btn icon-btn">⛶</button>
+        </div>
+
+        <div class="proxy-row">
+          <div><strong>Источник:</strong> <span id="sourceText">—</span></div>
+          <div><strong>Proxy:</strong> <span id="proxyText">—</span></div>
         </div>
       </section>
 
-      <section class="meta-card">
-        <h1 id="videoTitle">Выберите видео</h1>
-        <p id="videoDescription" class="description">Здесь будет описание.</p>
-        <div class="meta-row">
-          <span id="videoType" class="chip">—</span>
-          <a id="directLink" class="chip link-chip" href="#" target="_blank" rel="noopener noreferrer">Открыть прямую ссылку</a>
+      <section class="info-grid">
+        <div class="panel info-card">
+          <div class="panel-title">Описание</div>
+          <div id="currentDescription" class="info-text">Описание появится здесь.</div>
+        </div>
+
+        <div class="panel info-card">
+          <div class="panel-title">Статус</div>
+          <div id="statusText" class="info-text">Готово к работе.</div>
         </div>
       </section>
     </main>
@@ -43,6 +63,7 @@
 
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://unpkg.com/ogv@1.8.9/dist/ogv.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
